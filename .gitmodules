@@ -1,0 +1,3 @@
+[submodule "src/beatstr-core"]
+	path = src/beatstr-core
+	url = https://github.com/gngeorgiev/beatstr-core
