@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
+import {connect} from 'react-redux';
 
-export default class SearchComponent extends Component {
+class SearchComponent extends Component {
     render() {
         return (
             <View>
@@ -12,3 +13,5 @@ export default class SearchComponent extends Component {
         )
     }
 }
+
+export default connect()(SearchComponent);

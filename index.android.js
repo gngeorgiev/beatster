@@ -1,33 +1,19 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
-import {Router, Route} from 'react-native-redux-router';
+import {AppRegistry, View} from 'react-native';
 import {Provider} from 'react-redux';
 
-import store from './src/store/store';
+import App from './app/native/App';
 
-import Search from './src/beatstr-core/search/SearchContainer';
-
-
-class App extends Component {
-    render() {
-        return (
-            <View>
-                <Router>
-                    <Route name="search" component={() => <Search />} initial={true} title="Search" />
-                </Router>
-            </View>
-        )
-    }
-}
+import store from './app/store/store';
 
 class Beatstr extends Component {
     render() {
         return (
             <Provider store={store}>
-                {() => <App />}
+                <App />
             </Provider>
         )
     }
 }
 
-AppRegistry.registerComponent('Beatstr', () => Beatstr);
+AppRegistry.registerComponent('beatstr', () => Beatstr);
