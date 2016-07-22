@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
-import IconButton from './common/IconButton';
+import IconButton from '../components/common/IconButton';
 import {Grid, Col} from 'react-native-easy-grid';
 import {Content} from 'native-base';
+import {connect} from 'react-redux';
 
-export default class PlayerComponent extends Component {
+class PlayerComponent extends Component {
     render() {
+        const {track} = this.props;
+
         return <Content>
             <Grid>
                 <Col size={15}>
@@ -18,9 +21,13 @@ export default class PlayerComponent extends Component {
                     <IconButton iconName="skip-next"/>
                 </Col>
                 <Col size={55}>
-                    <Text>TITLE</Text>
+                    <Text>{track.title || 'No track is playing'}</Text>
                 </Col>
             </Grid>
         </Content>
     }
 }
+
+export default connect(state => ({
+    track: state.track
+}))(PlayerComponent);

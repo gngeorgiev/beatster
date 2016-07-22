@@ -2,24 +2,28 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {Container, Content, Header, InputGroup, Input, Icon, Button, List, ListItem} from 'native-base';
+import {search} from '../../actions/search';
+import {play} from '../../actions/play';
 
 class SearchComponent extends Component {
-    renderListRow(item) {
+    renderListRow(track) {
         return (
-            <ListItem>
-                <Text>{item}</Text>
+            <ListItem onPress={this.props.dispatch(play(track))}>
+                <Text>{track.title}</Text>
             </ListItem>
         )
     }
 
     render() {
+        const {dispatch, searchResults} = this.props;
+
         return (
             <Container>
                 <Content>
                     <Header searchBar>
                         <InputGroup>
                             <Icon name="md-search" />
-                            <Input placeholder="Search for a track" />
+                            <Input ref="searchInput" placeholder="Search for a track" onSubmitEditing={ev => dispatch(search(ev.nativeEvent.text))} />
                             <Icon name="md-musical-note" />
                         </InputGroup>
                         <Button transparent>
@@ -27,7 +31,7 @@ class SearchComponent extends Component {
                         </Button>
                     </Header>
 
-                    <List dataArray={[1,2,3]} renderRow={item => this.renderListRow(item)}>
+                    <List dataArray={searchResults} renderRow={item => this.renderListRow(item)}>
                     </List>
                 </Content>
             </Container>
@@ -35,4 +39,6 @@ class SearchComponent extends Component {
     }
 }
 
-export default connect()(SearchComponent);
+export default connect(state => ({
+    searchResults: state.search
+}))(SearchComponent);

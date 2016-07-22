@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Router, Route, Schema} from 'react-native-redux-router';
 import {connect} from 'react-redux';
 
-import Player from './components/PlayerComponent';
+import Player from './containers/PlayerContainer';
 
 import Search from './containers/SearchContainer';
 

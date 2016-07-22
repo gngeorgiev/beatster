@@ -22,10 +22,8 @@ export default class RippleButton extends Component {
         } = this.props;
 
         return (
-            <Button transparent style={Object.assign(style, {padding: 0})}>
-                <Ripple onPress={onPress}>
-                    {children}
-                </Ripple>
+            <Button transparent style={Object.assign(style, {padding: 0})} onPress={onPress}>
+                {children}
             </Button>
         )
     }
