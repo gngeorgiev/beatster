@@ -21,7 +21,7 @@ class PlayerComponent extends Component {
                     <IconButton iconName="skip-next"/>
                 </Col>
                 <Col size={55}>
-                    <Text>{track.title || 'No track is playing'}</Text>
+                    <Text>{(track && track.title) || 'No track is playing'}</Text>
                 </Col>
             </Grid>
         </Content>
