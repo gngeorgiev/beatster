@@ -8,7 +8,7 @@ import {play} from '../../actions/play';
 class SearchComponent extends Component {
     renderListRow(track) {
         return (
-            <ListItem onPress={this.props.dispatch(play(track))}>
+            <ListItem onPress={() => this.props.dispatch(play(track))}>
                 <Text>{track.title}</Text>
             </ListItem>
         )
@@ -16,6 +16,7 @@ class SearchComponent extends Component {
 
     render() {
         const {dispatch, searchResults} = this.props;
+        const data = searchResults.YouTube; //TODO: add other providers
 
         return (
             <Container>
@@ -31,7 +32,7 @@ class SearchComponent extends Component {
                         </Button>
                     </Header>
 
-                    <List dataArray={searchResults} renderRow={item => this.renderListRow(item)}>
+                    <List dataArray={data} renderRow={item => this.renderListRow(item)}>
                     </List>
                 </Content>
             </Container>
