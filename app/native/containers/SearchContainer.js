@@ -1,42 +1,55 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ListView, Image, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
-import {Container, Content, Header, InputGroup, Input, Icon, Button, List, ListItem} from 'native-base';
+import {Header, InputGroup, Input, Icon, Button} from 'native-base';
 import {search} from '../../actions/search';
 import {play} from '../../actions/play';
-import {Ripple} from 'react-native-material-design';
 
 class SearchComponent extends Component {
+    constructor() {
+        super();
+
+        this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    }
+
     renderListRow(track) {
         return (
-            <Ripple onPress={() => this.props.dispatch(play(track))}>
-                <Text>{track.title}</Text>
-            </Ripple>
+            <TouchableOpacity onPress={() => this.props.dispatch(play(track))}>
+                <View>
+                    <Image style={{width: 64, height: 64}} source={{uri: track.thumbnail}} />
+                    <Text >{track.title}</Text>
+                </View>
+            </TouchableOpacity>
         )
     }
 
+    renderListHeader() {
+        return (
+            <Header searchBar>
+                <InputGroup>
+                    <Icon name="md-search" />
+                    <Input ref="searchInput" placeholder="Search for a track" onSubmitEditing={ev => this.props.dispatch(search(ev.nativeEvent.text))} />
+                    <Icon name="md-musical-note" />
+                </InputGroup>
+                <Button transparent>
+                    Search
+                </Button>
+            </Header>
+        );
+    }
+
     render() {
-        const {dispatch, searchResults} = this.props;
+        const {searchResults} = this.props;
         const data = searchResults.YouTube; //TODO: add other providers
+        const ds = this.dataSource.cloneWithRows(data);
 
         return (
-            <Container>
-                <Content>
-                    <Header searchBar>
-                        <InputGroup>
-                            <Icon name="md-search" />
-                            <Input ref="searchInput" placeholder="Search for a track" onSubmitEditing={ev => dispatch(search(ev.nativeEvent.text))} />
-                            <Icon name="md-musical-note" />
-                        </InputGroup>
-                        <Button transparent>
-                            Search
-                        </Button>
-                    </Header>
-
-                    <List dataArray={data} renderRow={item => this.renderListRow(item)}>
-                    </List>
-                </Content>
-            </Container>
+            <ListView
+                renderHeader={() => this.renderListHeader()}
+                enableEmptySections={true}
+                dataSource={ds}
+                renderRow={item => this.renderListRow(item)}
+            />
         )
     }
 }
