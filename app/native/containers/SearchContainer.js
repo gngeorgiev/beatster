@@ -4,13 +4,14 @@ import {connect} from 'react-redux';
 import {Container, Content, Header, InputGroup, Input, Icon, Button, List, ListItem} from 'native-base';
 import {search} from '../../actions/search';
 import {play} from '../../actions/play';
+import {Ripple} from 'react-native-material-design';
 
 class SearchComponent extends Component {
     renderListRow(track) {
         return (
-            <ListItem onPress={() => this.props.dispatch(play(track))}>
+            <Ripple onPress={() => this.props.dispatch(play(track))}>
                 <Text>{track.title}</Text>
-            </ListItem>
+            </Ripple>
         )
     }
 

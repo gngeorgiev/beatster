@@ -8,6 +8,8 @@
     "kill": "fuser -k 8081/tcp || fuser -k 8085/tcp || true",
     "dev": "npm run kill && npm run reverse & npm start > /dev/null &",
     "menu": "adb shell input keyevent KEYCODE_MENU",
+    "android": "react-native run-android",
+    "log": "react-native log-android",
     "postinstall": "rn-nodeify --install --hack"
   },
   "dependencies": {

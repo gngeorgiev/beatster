@@ -4,8 +4,30 @@ import IconButton from '../components/common/IconButton';
 import {Grid, Col} from 'react-native-easy-grid';
 import {Content} from 'native-base';
 import {connect} from 'react-redux';
+import store from '../../store/store';
+import {isEqual} from 'lodash';
+import AudioPlayer from '../modules/AudioPlayer';
 
 class PlayerComponent extends Component {
+    constructor() {
+        super();
+
+        this.audioPlayer = new AudioPlayer();
+
+        let lastTrack;
+        store.subscribe(async () => {
+            const {play} = store.getState();
+            if (!isEqual(lastTrack, play.track) && play.track.streamUrl) {
+                try {
+                    await this.audioPlayer.play(play.track.streamUrl);
+                    lastTrack = play.track;
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        });
+    }
+
     render() {
         const {track} = this.props;
 
@@ -29,5 +51,5 @@ class PlayerComponent extends Component {
 }
 
 export default connect(state => ({
-    track: state.track
+    track: state.play.track
 }))(PlayerComponent);
