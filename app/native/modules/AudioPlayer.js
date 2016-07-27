@@ -2,7 +2,7 @@ import {NativeModules} from 'react-native';
 
 const {AudioPlayer} = NativeModules;
 
-export default class AudioPlayerWrapper {
+export class AudioPlayerWrapper {
     currentPosition() {
         return AudioPlayer.getCurrentPosition();
     }
@@ -23,3 +23,5 @@ export default class AudioPlayerWrapper {
         return AudioPlayer.play(url);
     }
 }
+
+export default new AudioPlayerWrapper();

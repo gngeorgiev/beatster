@@ -1,13 +1,15 @@
 import api from '../api/Api';
 
 export const PLAY_TRACK_ACTION = 'PLAY_TRACK_ACTION';
-export function play(track) {
+export const PAUSE_TRACK_ACTION = 'PAUSE_TRACK_ACTION';
+export function play(track, isPlaying = true) {
     return async dispatch => {
         const resolvedTrack = await api.player.resolve(track.id, track.provider);
 
         return dispatch({
-            type: PLAY_TRACK_ACTION,
-            track: resolvedTrack
+            type: isPlaying ? PLAY_TRACK_ACTION : PAUSE_TRACK_ACTION,
+            track: resolvedTrack,
+            isPlaying
         });
     };
 }

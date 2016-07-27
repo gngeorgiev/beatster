@@ -14,12 +14,32 @@ class SearchComponent extends Component {
 
     renderListRow(track) {
         return (
-            <TouchableOpacity onPress={() => this.props.dispatch(play(track))}>
-                <View>
-                    <Image style={{width: 64, height: 64}} source={{uri: track.thumbnail}} />
-                    <Text >{track.title}</Text>
+            <TouchableOpacity
+                onPress={() => this.props.dispatch(play(track))}
+                style={{padding: 5}}
+            >
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                    <Image style={{width: 64, height: 64, marginRight: 10}} source={{uri: track.thumbnail}} />
+                    <Text style={{alignItems: 'center', textAlignVertical: 'center', fontSize: 16}}>{track.title}</Text>
                 </View>
             </TouchableOpacity>
+        )
+    }
+
+    renderListSeparator(sectionId, rowId) {
+        return (
+            <View
+                key={`${sectionId}-${rowId}`}
+                style={{
+                    borderTopColor: 'black',
+                    borderTopWidth: 1,
+                    marginTop: 4,
+                    marginBottom: 4,
+                    marginRight: 10,
+                    marginLeft: 10,
+                    opacity: 0.2
+                }}
+            />
         )
     }
 
@@ -45,10 +65,11 @@ class SearchComponent extends Component {
 
         return (
             <ListView
+                renderSeparator={(sectionId, rowId) => this.renderListSeparator(sectionId, rowId)}
                 renderHeader={() => this.renderListHeader()}
+                renderRow={item => this.renderListRow(item)}
                 enableEmptySections={true}
                 dataSource={ds}
-                renderRow={item => this.renderListRow(item)}
             />
         )
     }

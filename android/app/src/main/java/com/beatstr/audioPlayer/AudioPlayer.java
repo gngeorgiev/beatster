@@ -46,6 +46,11 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     @ReactMethod
     public void pause(Promise promise) {
         try {
+            if (!this.player.isPlaying()) {
+                promise.resolve(null);
+                return;
+            }
+
             this.player.pause();
             promise.resolve(null);
         } catch (Exception e) {
@@ -56,18 +61,19 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     @ReactMethod
     public void play(String url, Promise promise) {
         try {
-            if (this.dataSource.equals(url)) {
-                this.player.start();
+            if (this.player.isPlaying()) {
+                promise.resolve(null);
                 return;
             }
 
-            if (url.equals("")) {
-                url = this.dataSource;
+            if (this.dataSource.equals(url)) {
+                this.player.start();
+                promise.resolve(null);
+                return;
             }
 
-            if (this.player.isPlaying()) {
-                this.player.stop();
-                this.player.reset();
+            if (url == null || url.equals("")) {
+                url = this.dataSource;
             }
 
             this.player.setDataSource(url);
