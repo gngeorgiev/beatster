@@ -9,18 +9,21 @@ import {isEqual} from 'lodash';
 import AudioPlayer from '../modules/AudioPlayer';
 
 class PlayerComponent extends Component {
-    constructor() {
-        super();
+    state = {};
 
-        this.audioPlayer = new AudioPlayer();
+    componentDidMount() {
+        this.setState({
+            audioPlayer: new AudioPlayer(),
+            isPlaying: false,
+            currentTrack: null
+        });
 
-        let lastTrack;
         store.subscribe(async () => {
             const {play} = store.getState();
-            if (!isEqual(lastTrack, play.track) && play.track.streamUrl) {
+            if (!isEqual(this.currentTrack, play.track) && play.track.streamUrl) {
                 try {
-                    await this.audioPlayer.play(play.track.streamUrl);
-                    lastTrack = play.track;
+                    this.play(play.track);
+                    this.setState({currentTrack: play.track});
                 } catch (e) {
                     console.error(e);
                 }
@@ -28,22 +31,50 @@ class PlayerComponent extends Component {
         });
     }
 
+    async play(track = this.state.currentTrack) {
+        try {
+            this.setState({isPlaying: true});
+            await this.state.audioPlayer.play(track.streamUrl);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async pause() {
+        try {
+            this.setState({isPlaying: false});
+            await this.state.audioPlayer.pause();
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    togglePlayPause() {
+        this.state.isPlaying ? this.pause() : this.play();
+    }
+
     render() {
-        const {track} = this.props;
+        const {currentTrack} = this.state;
+        const playIcon = this.state.isPlaying ? 'pause-circle-outline' : 'play-arrow';
 
         return <Content>
             <Grid>
+                <Col size={55}>
+                    <Text style={{textAlign: 'center', textAlignVertical: 'center', fontSize: 15}}>
+                        {(currentTrack && currentTrack.title) || 'No track is playing'}
+                    </Text>
+                </Col>
                 <Col size={15}>
                     <IconButton iconName="skip-previous"/>
                 </Col>
                 <Col size={15}>
-                    <IconButton iconName="play-arrow"/>
+                    <IconButton
+                        onPress={() => this.togglePlayPause()}
+                        iconName={playIcon}
+                    />
                 </Col>
                 <Col size={15}>
                     <IconButton iconName="skip-next"/>
-                </Col>
-                <Col size={55}>
-                    <Text>{(track && track.title) || 'No track is playing'}</Text>
                 </Col>
             </Grid>
         </Content>

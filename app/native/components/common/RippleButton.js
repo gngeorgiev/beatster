@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {TouchableNativeFeedback} from 'react-native';
+import {TouchableNativeFeedback, View} from 'react-native';
 
 export default class RippleButton extends Component {
     static propTypes = {
@@ -27,7 +27,9 @@ export default class RippleButton extends Component {
                 background={TouchableNativeFeedback.Ripple('#000000')}
                 delayPressIn={0}
             >
-                {children}
+                <View>
+                    {children}
+                </View>
             </TouchableNativeFeedback>
         )
     }

@@ -11,6 +11,10 @@ export default class AudioPlayerWrapper {
         return AudioPlayer.play('');
     }
 
+    pause() {
+        return AudioPlayer.pause();
+    }
+
     stop() {
         return AudioPlayer.stop();
     }
