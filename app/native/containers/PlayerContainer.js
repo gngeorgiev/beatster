@@ -49,7 +49,7 @@ class PlayerComponent extends Component {
         >
             <Grid>
                 <Col size={55}>
-                    <Text style={{textAlign: 'center', textAlignVertical: 'center', fontSize: 15}}>
+                    <Text style={{flex: 1, textAlign: 'center', textAlignVertical: 'center', fontSize: 18}}>
                         {(track && track.title) || 'No track is playing'}
                     </Text>
                 </Col>

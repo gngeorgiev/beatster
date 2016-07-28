@@ -1,7 +1,7 @@
 import PlayerApi from './PlayerApi';
 
 class Api {
-    constructor(address = 'http://localhost', port = '8085') {
+    constructor(address = 'http://localhost', port = 8085) {
         this.url = `${address}:${port}`;
 
         this.player = new PlayerApi(this);
@@ -22,4 +22,4 @@ class Api {
     }
 }
 
-export default new Api();
+export default new Api('http://46.101.123.48', 80);
