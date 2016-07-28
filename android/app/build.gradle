@@ -132,6 +132,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-spinkit')
     compile project(':react-native-vector-icons')
     compile project(':react-native-material-kit')
     compile fileTree(dir: "libs", include: ["*.jar"])

@@ -6,23 +6,38 @@ import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import AudioPlayer from '../modules/AudioPlayer';
 import {play} from '../../actions/play';
+import {loading} from '../../actions/loading';
 
 class PlayerComponent extends Component {
+    currentTrack = null;
+
     async play(track) {
+        this.props.dispatch(loading(true));
+        if (!isEqual(this.currentTrack, track)) {
+            await AudioPlayer.stop();
+        }
+
+        this.currentTrack = track;
         await AudioPlayer.play(track.streamUrl);
+
+        this.props.dispatch(loading(false));
     }
 
     async pause() {
         await AudioPlayer.pause();
     }
 
-    render() {
-        const {track, isPlaying, dispatch} = this.props;
+    componentWillReceiveProps(props) {
+        const {isPlaying, track} = props;
         if (isPlaying) {
             this.play(track);
         } else {
             this.pause();
         }
+    }
+
+    render() {
+        const {track, isPlaying, dispatch} = this.props;
 
         return <View
             style={{

@@ -16,16 +16,33 @@ class AudioPlayer extends ReactContextBaseJavaModule {
 
     AudioPlayer(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.player = new MediaPlayer();
-        this.player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        this.player = this.createMediaPlayer();
+    }
 
-        this.dataSource = "";
+    private MediaPlayer createMediaPlayer() {
+        MediaPlayer player = new MediaPlayer();
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        return player;
     }
 
     private void handleError(Exception e, Promise promise) {
-        Log.v(TAG, e.toString());
+        this.handleError("EAUDIOERROR", e, promise);
+    }
+
+    private void handleError(String code, Exception e, Promise promise) {
+        Log.v(TAG, code, e);
+        if (this.player.isPlaying()) {
+            this.player.stop();
+        }
+
         this.player.reset();
-        promise.reject(e);
+        this.player.release();
+        this.player = null;
+        this.player = this.createMediaPlayer();
+        this.dataSource = null;
+
+        promise.reject(code, e.getMessage(), e);
     }
 
     @Override
@@ -59,14 +76,14 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void play(String url, Promise promise) {
+    public void play(String url, final Promise promise) {
         try {
             if (this.player.isPlaying()) {
                 promise.resolve(null);
                 return;
             }
 
-            if (this.dataSource.equals(url)) {
+            if (this.dataSource != null && this.dataSource.equals(url)) {
                 this.player.start();
                 promise.resolve(null);
                 return;
@@ -76,12 +93,26 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                 url = this.dataSource;
             }
 
-            this.player.setDataSource(url);
-            this.player.prepare();
-            this.player.start();
+            final AudioPlayer self = this;
 
+            this.player.reset();
+            this.player.setDataSource(url);
+            this.player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                    promise.resolve(null);
+                }
+            });
+            this.player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    self.handleError(Integer.toString(what), new Exception(Integer.toString(extra)), promise);
+                    return true;
+                }
+            });
+            this.player.prepareAsync();
             this.dataSource = url;
-            promise.resolve(null);
         } catch (Exception e) {
             this.handleError(e, promise);
         }
