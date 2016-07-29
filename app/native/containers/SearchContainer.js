@@ -49,7 +49,6 @@ class SearchComponent extends Component {
                 <InputGroup>
                     <Icon name="md-search" />
                     <Input ref="searchInput" placeholder="Search for a track" onSubmitEditing={ev => this.props.dispatch(search(ev.nativeEvent.text))} />
-                    <Icon name="md-musical-note" />
                 </InputGroup>
                 <Button transparent>
                     Search

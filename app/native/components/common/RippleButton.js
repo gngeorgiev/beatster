@@ -27,7 +27,7 @@ export default class RippleButton extends Component {
                 background={TouchableNativeFeedback.Ripple('#000000')}
                 delayPressIn={0}
             >
-                <View>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                     {children}
                 </View>
             </TouchableNativeFeedback>

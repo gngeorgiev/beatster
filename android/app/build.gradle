@@ -132,6 +132,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-android-tablayout')
     compile project(':react-native-spinkit')
     compile project(':react-native-vector-icons')
     compile project(':react-native-material-kit')
