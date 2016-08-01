@@ -1,7 +1,6 @@
 package com.beatstr;
 
 import com.facebook.react.ReactActivity;
-import com.xebia.reactnative.TabLayoutPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.xinthink.rnmk.ReactMaterialKitPackage;
