@@ -9,7 +9,8 @@
     "dev": "npm run kill && npm run reverse & npm start > /dev/null &",
     "menu": "adb shell input keyevent KEYCODE_MENU",
     "android": "react-native run-android",
-    "log": "react-native log-android"
+    "log": "react-native log-android",
+    "release": "cd android && ./gradlew assembleRelease && cd android/app/build/outputs/apk && adb install app-release.apk"
   },
   "dependencies": {
     "lodash": "^4.13.1",

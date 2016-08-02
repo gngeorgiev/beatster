@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, ListView, Image, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
+import {View, Text, ListView, Image, TouchableNativeFeedback, TouchableOpacity, TextInput} from 'react-native';
 import {connect} from 'react-redux';
-import {Header, InputGroup, Input, Icon, Button} from 'native-base';
 import {search} from '../../actions/search';
 import {play} from '../../actions/play';
+import {Actions} from 'react-native-redux-router';
+import IconButton from '../components/common/IconButton';
+import {Grid, Col} from 'react-native-easy-grid';
+import {MKTextField} from 'react-native-material-kit';
 
 class SearchComponent extends Component {
     constructor() {
@@ -45,15 +48,25 @@ class SearchComponent extends Component {
 
     renderListHeader() {
         return (
-            <Header searchBar>
-                <InputGroup>
-                    <Icon name="md-search" />
-                    <Input ref="searchInput" placeholder="Search for a track" onSubmitEditing={ev => this.props.dispatch(search(ev.nativeEvent.text))} />
-                </InputGroup>
-                <Button transparent>
-                    Search
-                </Button>
-            </Header>
+
+            <View
+                style={{flex: 1, flexDirection: 'row', height: 56}}
+                elevation={5}
+            >
+                <Grid>
+                    <Col size={15}>
+                        <IconButton iconName="arrow-back" iconSize={25} onPress={Actions.pop} />
+                    </Col>
+                    <Col size={80}>
+                        <MKTextField
+                            placeholder="Search tracks"
+                            style={{height: 50}}
+                            onSubmitEditing={ev => this.props.dispatch(search(ev.nativeEvent.text))}
+                        />
+                    </Col>
+                    <Col size={5} />
+                </Grid>
+            </View>
         );
     }
 
@@ -64,6 +77,8 @@ class SearchComponent extends Component {
 
         return (
             <ListView
+                style={{flex: 1, padding: 0}}
+                contentContainerStyle={{padding: 0}}
                 renderSeparator={(sectionId, rowId) => this.renderListSeparator(sectionId, rowId)}
                 renderHeader={() => this.renderListHeader()}
                 renderRow={item => this.renderListRow(item)}

@@ -1,28 +1,35 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
-import {Router, Route} from 'react-native-redux-router';
+import {Router, Route, Animations, Schema} from 'react-native-redux-router';
 import {connect} from 'react-redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from './components/TabBar';
 
 import Player from './containers/PlayerContainer';
+import Home from './containers/HomeContainer';
 import Search from './containers/SearchContainer';
 
 import Loading from './components/LoadingComponent';
 
-class HomeView extends Component {
+// class HomeView extends Component {
+//     render() {
+//         return (
+//             <ScrollableTabView
+//                 initialPage={0}
+//                 renderTabBar={() => <TabBar />}
+//             >
+//                 <Search tabLabel="search"/>
+//             </ScrollableTabView>
+//         )
+//     }
+// }
+
+class Footer extends Component {
     render() {
         return (
-            <ScrollableTabView
-                initialPage={0}
-                renderTabBar={() => <TabBar />}
-            >
-                <View tabLabel="home">
-                    <Text>Home</Text>
-                </View>
-
-                <Search tabLabel="search"/>
-            </ScrollableTabView>
+            <View style={{height: 50, maxHeight: 50}}>
+                <Player/>
+            </View>
         )
     }
 }
@@ -38,12 +45,18 @@ class App extends Component {
 
                 <View style={{flex: 1}}>
                     <Router>
-                        <Route name="home" component={HomeView} initial={true} />
+                        <Schema
+                            name="default"
+                            sceneConfig={Animations.FlatFloatFromRight}
+                            hideNavBar={true}
+                            hideFooter={true}
+                        />
+
+                        <Route name="homeView" component={Home} initial={true} />
+                        <Route name="searchView" component={Search} />
                     </Router>
 
-                    <View style={{height: 50}}>
-                        <Player/>
-                    </View>
+                    <Footer />
                 </View>
             </View>
         )

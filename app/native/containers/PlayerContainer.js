@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, DeviceEventEmitter} from 'react-native';
 import IconButton from '../components/common/IconButton';
 import {Grid, Col} from 'react-native-easy-grid';
 import {connect} from 'react-redux';
@@ -20,7 +20,11 @@ class PlayerComponent extends Component {
     }
 
     componentDidMount() {
-        AudioPlayer.onCompleted(() => this.props.dispatch(playNext(this.props.track)));
+        this._listener = DeviceEventEmitter.addListener('OnCompleted', () => this.props.dispatch(playNext(this.props.track)));
+    }
+
+    componentWillUnmount() {
+        this._listener.remove();
     }
 
     componentWillReceiveProps(props) {
