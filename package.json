@@ -10,7 +10,7 @@
     "menu": "adb shell input keyevent KEYCODE_MENU",
     "android": "react-native run-android",
     "log": "react-native log-android",
-    "release": "cd android && ./gradlew assembleRelease && cd android/app/build/outputs/apk && adb install app-release.apk"
+    "release": "cd android && ./gradlew assembleRelease && cd app/build/outputs/apk && adb install app-release.apk"
   },
   "dependencies": {
     "lodash": "^4.13.1",
