@@ -5,11 +5,14 @@ export const PLAY_TRACK_ACTION = 'PLAY_TRACK_ACTION';
 export const PAUSE_TRACK_ACTION = 'PAUSE_TRACK_ACTION';
 export function play(track, isPlaying = true) {
     return wrapLoading(async dispatch => {
-        const resolvedTrack = await api.player.resolve(track.id, track.provider);
+        if (!track.streamUrl) {
+            const {streamUrl} = await api.player.resolve(track.id, track.provider);
+            track.streamUrl = streamUrl;
+        }
 
         return dispatch({
             type: isPlaying ? PLAY_TRACK_ACTION : PAUSE_TRACK_ACTION,
-            track: resolvedTrack,
+            track,
             isPlaying
         });
     });

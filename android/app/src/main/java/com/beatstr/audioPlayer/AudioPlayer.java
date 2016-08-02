@@ -45,6 +45,11 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         promise.reject(code, e.getMessage(), e);
     }
 
+    private void emitEvent() {
+//        this.getReactApplicationContext()
+//                    .getJSModule(AudioPlayerPackage.class).
+    }
+
     @Override
     public String getName() {
         return "AudioPlayer";
@@ -63,11 +68,6 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     @ReactMethod
     public void pause(Promise promise) {
         try {
-            if (!this.player.isPlaying()) {
-                promise.resolve(null);
-                return;
-            }
-
             this.player.pause();
             promise.resolve(null);
         } catch (Exception e) {
@@ -83,14 +83,14 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                 return;
             }
 
+            if (url == null || url.equals("")) {
+                url = this.dataSource;
+            }
+
             if (this.dataSource != null && this.dataSource.equals(url)) {
                 this.player.start();
                 promise.resolve(null);
                 return;
-            }
-
-            if (url == null || url.equals("")) {
-                url = this.dataSource;
             }
 
             final AudioPlayer self = this;
@@ -109,6 +109,12 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                 public boolean onError(MediaPlayer mp, int what, int extra) {
                     self.handleError(Integer.toString(what), new Exception(Integer.toString(extra)), promise);
                     return true;
+                }
+            });
+            this.player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+
                 }
             });
             this.player.prepareAsync();
@@ -148,13 +154,5 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
-    public void setVolume(float volume, Promise promise) {
-        try {
-            this.player.setVolume(volume, volume);
-            promise.resolve(null);
-        } catch (Exception e) {
-            this.handleError(e, promise);
-        }
-    }
+
 }

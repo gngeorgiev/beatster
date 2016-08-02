@@ -22,5 +22,5 @@ class Api {
     }
 }
 
-export default new Api('http://46.101.123.48', 80);
-// export default new Api();
+// export default new Api('http://46.101.123.48', 80);
+export default new Api();

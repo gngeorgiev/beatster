@@ -9,17 +9,9 @@ import {play} from '../../actions/play';
 import {loading} from '../../actions/loading';
 
 class PlayerComponent extends Component {
-    currentTrack = null;
-
     async play(track) {
         this.props.dispatch(loading(true));
-        if (!isEqual(this.currentTrack, track)) {
-            await AudioPlayer.stop();
-        }
-
-        this.currentTrack = track;
         await AudioPlayer.play(track.streamUrl);
-
         this.props.dispatch(loading(false));
     }
 
