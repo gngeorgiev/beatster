@@ -2,14 +2,19 @@ package com.beatstr.audioPlayer;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 class AudioPlayer extends ReactContextBaseJavaModule {
     private static final String TAG = "AudioPlayer";
+
+    private static final String EVENT_ONCOMPLETED = "OnCompleted";
 
     private MediaPlayer player;
     private String dataSource;
@@ -45,9 +50,10 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         promise.reject(code, e.getMessage(), e);
     }
 
-    private void emitEvent() {
-//        this.getReactApplicationContext()
-//                    .getJSModule(AudioPlayerPackage.class).
+    private void emitEvent(String ev, @Nullable WritableMap params) {
+        this.getReactApplicationContext()
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(ev, params);
     }
 
     @Override
@@ -78,7 +84,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     @ReactMethod
     public void play(String url, final Promise promise) {
         try {
-            if (this.player.isPlaying()) {
+            if (this.player.isPlaying() && this.dataSource.equals(url)) {
                 promise.resolve(null);
                 return;
             }
@@ -114,7 +120,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
             this.player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-
+                    self.emitEvent(EVENT_ONCOMPLETED, null);
                 }
             });
             this.player.prepareAsync();

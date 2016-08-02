@@ -1,9 +1,18 @@
 import {loading} from '../actions/loading';
 
+let isLoading = false;
 export default function (fn) {
     return dispatch => {
-        loading(true);
+        if (!isLoading) {
+            isLoading = true;
+            loading(true);
+        }
+
         fn(dispatch);
-        loading(false);
+
+        if (isLoading) {
+            isLoading = false;
+            loading(false);
+        }
     }
 }

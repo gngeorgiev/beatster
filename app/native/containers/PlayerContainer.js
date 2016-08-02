@@ -5,7 +5,7 @@ import {Grid, Col} from 'react-native-easy-grid';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import AudioPlayer from '../modules/AudioPlayer';
-import {play} from '../../actions/play';
+import {play, playNext, playPrevious} from '../../actions/play';
 import {loading} from '../../actions/loading';
 
 class PlayerComponent extends Component {
@@ -17,6 +17,10 @@ class PlayerComponent extends Component {
 
     async pause() {
         await AudioPlayer.pause();
+    }
+
+    componentDidMount() {
+        AudioPlayer.onCompleted(() => this.props.dispatch(playNext(this.props.track)));
     }
 
     componentWillReceiveProps(props) {
@@ -46,7 +50,10 @@ class PlayerComponent extends Component {
                     </Text>
                 </Col>
                 <Col size={15}>
-                    <IconButton iconName="skip-previous"/>
+                    <IconButton
+                        onPress={() => dispatch(playPrevious(track))}
+                        iconName="skip-previous"
+                    />
                 </Col>
                 <Col size={15}>
                     <IconButton
@@ -55,7 +62,10 @@ class PlayerComponent extends Component {
                     />
                 </Col>
                 <Col size={15}>
-                    <IconButton iconName="skip-next"/>
+                    <IconButton
+                        onPress={() => dispatch(playNext(track))}
+                        iconName="skip-next"
+                    />
                 </Col>
             </Grid>
         </View>
