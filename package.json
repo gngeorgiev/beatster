@@ -20,7 +20,7 @@
     "react-native-easy-grid": "^0.1.6",
     "react-native-material-design": "^0.3.6",
     "react-native-material-kit": "^0.3.2",
-    "react-native-redux-router": "^1.0.7",
+    "react-native-redux-router": "git+https://github.com/gngeorgiev/react-native-redux-router.git",
     "react-native-scrollable-tab-view": "^0.5.3",
     "react-native-spinkit": "^0.1.2",
     "react-native-vector-icons": "^2.0.3",

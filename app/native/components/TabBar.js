@@ -39,6 +39,7 @@ const DefaultTabBar = React.createClass({
         return <IconButton
             style={{flex: 1}}
             key={name}
+            type={IconButton.IconTypes.FontAwesome}
             accessible={true}
             onPress={() => this.props.goToPage(page)}
             iconName={name}

@@ -1,28 +1,13 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import {Router, Route, Animations, Schema} from 'react-native-redux-router';
+import {View, Text, Navigator} from 'react-native';
+import {Router, Route, Schema} from 'react-native-redux-router';
 import {connect} from 'react-redux';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
-import TabBar from './components/TabBar';
 
 import Player from './containers/PlayerContainer';
 import Home from './containers/HomeContainer';
 import Search from './containers/SearchContainer';
 
 import Loading from './components/LoadingComponent';
-
-// class HomeView extends Component {
-//     render() {
-//         return (
-//             <ScrollableTabView
-//                 initialPage={0}
-//                 renderTabBar={() => <TabBar />}
-//             >
-//                 <Search tabLabel="search"/>
-//             </ScrollableTabView>
-//         )
-//     }
-// }
 
 class Footer extends Component {
     render() {
@@ -47,7 +32,7 @@ class App extends Component {
                     <Router>
                         <Schema
                             name="default"
-                            sceneConfig={Animations.FlatFloatFromRight}
+                            sceneConfig={Navigator.SceneConfigs.FadeAndroid}
                             hideNavBar={true}
                             hideFooter={true}
                         />
