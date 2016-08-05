@@ -16,6 +16,8 @@ import TabBar from '../components/TabBar';
 import getProviderIcon from '../../utils/getProviderIcon';
 
 class SearchComponent extends Component {
+    state = {};
+
     constructor() {
         super();
 
@@ -73,6 +75,8 @@ class SearchComponent extends Component {
                             ref="textField"
                             placeholder="Search tracks"
                             style={{height: 50}}
+                            value={this.state.textValue}
+                            onChange={ev => this.setState({textValue: ev.nativeEvent.text})}
                             onChangeText={debounce(text => this.props.dispatch(autocomplete(text)))}
                             onSubmitEditing={ev => this.search(ev.nativeEvent.text)}
                         />
@@ -109,11 +113,14 @@ class SearchComponent extends Component {
     renderAutocompleteListRow(item) {
         return (
             <TouchableOpacity
-                onPress={() => this.search(item)}
+                onPress={() => {
+                    this.search(item);
+                    this.setState({textValue: item});
+                }}
                 style={{padding: 15}}
             >
                 <View style={{flex: 1, flexDirection: 'row'}}>
-                    <Icon name="history" size={24} style={{marginRight: 10}} />
+                    <Icon name="search" size={24} style={{marginRight: 10}} />
                     <Text style={{alignItems: 'center', textAlignVertical: 'center', fontSize: 16}}>{item}</Text>
                 </View>
             </TouchableOpacity>
