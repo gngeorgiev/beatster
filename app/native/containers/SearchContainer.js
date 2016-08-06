@@ -79,6 +79,8 @@ class SearchComponent extends Component {
                             onChange={ev => this.setState({textValue: ev.nativeEvent.text})}
                             onChangeText={debounce(text => this.props.dispatch(autocomplete(text)))}
                             onSubmitEditing={ev => this.search(ev.nativeEvent.text)}
+                            onFocus={() => this.setState({showAutocomplete: true})}
+                            onBlur={() => this.setState({showAutocomplete: false})}
                         />
                     </Col>
                     <Col size={5} />
@@ -141,10 +143,10 @@ class SearchComponent extends Component {
     }
 
     renderListView(providers, autoCompleteResults) {
-        if (providers.length) {
-            return this.renderSearchResultsListView(providers);
-        } else if (autoCompleteResults.length) {
+        if (autoCompleteResults.length && this.state.showAutocomplete) {
             return this.renderAutocompleteListView(autoCompleteResults);
+        } else if (providers.length) {
+            return this.renderSearchResultsListView(providers);
         }
 
         return <View />
