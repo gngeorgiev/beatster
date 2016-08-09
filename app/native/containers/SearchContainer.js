@@ -24,6 +24,11 @@ class SearchComponent extends Component {
         this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     }
 
+    componentWillUnmount() {
+        this.props.dispatch(search(''));
+        this.props.dispatch(autocomplete(''));
+    }
+
     renderListRow(track) {
         return (
             <TouchableOpacity
@@ -58,6 +63,7 @@ class SearchComponent extends Component {
     search(text) {
         this.props.dispatch(search(text));
         this.refs.textField.blur();
+        this.setState({showAutocomplete: false});
     }
 
     renderHeader() {
@@ -68,7 +74,7 @@ class SearchComponent extends Component {
             >
                 <Grid>
                     <Col size={15}>
-                        <IconButton iconName="arrow-back" iconSize={25} onPress={Actions.pop} />
+                        <IconButton iconName="arrow-back" iconSize={25} onPress={() => Actions.pop()} />
                     </Col>
                     <Col size={80}>
                         <MKTextField
@@ -80,7 +86,6 @@ class SearchComponent extends Component {
                             onChangeText={debounce(text => this.props.dispatch(autocomplete(text)))}
                             onSubmitEditing={ev => this.search(ev.nativeEvent.text)}
                             onFocus={() => this.setState({showAutocomplete: true})}
-                            onBlur={() => this.setState({showAutocomplete: false})}
                         />
                     </Col>
                     <Col size={5} />
@@ -117,7 +122,7 @@ class SearchComponent extends Component {
             <TouchableOpacity
                 onPress={() => {
                     this.search(item);
-                    this.setState({textValue: item});
+                    this.setState({textValue: item})
                 }}
                 style={{padding: 15}}
             >
@@ -143,7 +148,7 @@ class SearchComponent extends Component {
     }
 
     renderListView(providers, autoCompleteResults) {
-        if (autoCompleteResults.length && this.state.showAutocomplete) {
+        if ((autoCompleteResults.length || this.state.textValue === '')&& this.state.showAutocomplete) {
             return this.renderAutocompleteListView(autoCompleteResults);
         } else if (providers.length) {
             return this.renderSearchResultsListView(providers);
@@ -164,7 +169,7 @@ class SearchComponent extends Component {
         });
 
         return (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1}} accessible={true}>
                 {this.renderHeader()}
                 {this.renderListView(providers, autoCompleteResults)}
             </View>
