@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import AudioPlayer from '../modules/AudioPlayer';
 import {play, playNext, playPrevious} from '../../actions/play';
-import {loading} from '../../actions/loading';
 
 class PlayerComponent extends Component {
     async play(track) {
@@ -40,33 +39,31 @@ class PlayerComponent extends Component {
         return <View
             style={{
                 marginTop: 2,
-                marginBottom: 5,
-                borderTopColor: 'black',
-                borderTopWidth: 1
+                marginBottom: 5
             }}
         >
             <Grid>
-                <Col size={55}>
+                <Col size={70}>
                     <Text style={{flex: 1, textAlign: 'center', textAlignVertical: 'center', fontSize: 18}}>
                         {(track && track.title) || 'No track is playing'}
                     </Text>
                 </Col>
+                {/*<Col size={15}>*/}
+                    {/*<IconButton*/}
+                        {/*onPress={() => dispatch(playPrevious(track))}*/}
+                        {/*iconName="skip-previous"*/}
+                    {/*/>*/}
+                {/*</Col>*/}
                 <Col size={15}>
                     <IconButton
-                        onPress={() => dispatch(playPrevious(track))}
-                        iconName="skip-previous"
+                        onPress={() => dispatch(playNext(track))}
+                        iconName="skip-next"
                     />
                 </Col>
                 <Col size={15}>
                     <IconButton
                         onPress={() => dispatch(play(track, !isPlaying))}
                         iconName={isPlaying ? 'pause-circle-outline' : 'play-arrow'}
-                    />
-                </Col>
-                <Col size={15}>
-                    <IconButton
-                        onPress={() => dispatch(playNext(track))}
-                        iconName="skip-next"
                     />
                 </Col>
             </Grid>

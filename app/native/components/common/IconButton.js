@@ -34,13 +34,14 @@ export default class IconButton extends Component {
             iconSize,
             onPress,
             iconStyle,
-            type
+            type,
+            style
         } = this.props;
 
         const Icon = IconButton.getIcon(type);
 
         return (
-            <RippleButton onPress={onPress}>
+            <RippleButton onPress={onPress} style={style}>
                 <Icon name={iconName} size={iconSize} style={iconStyle} />
             </RippleButton>
         )

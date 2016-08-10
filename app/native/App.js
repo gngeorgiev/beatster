@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import {View, Text, Navigator} from 'react-native';
 import {Router, Route, Schema} from 'react-native-redux-router';
 import {connect} from 'react-redux';
+import {MKButton} from 'react-native-material-kit';
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import {Grid, Row} from 'react-native-easy-grid';
 
 import Player from './containers/PlayerContainer';
 import Home from './containers/HomeContainer';
@@ -12,7 +15,7 @@ import Loading from './components/LoadingComponent';
 class Footer extends Component {
     render() {
         return (
-            <View style={{height: 50, maxHeight: 50}}>
+            <View style={{height: 60, maxHeight: 50}}>
                 <Player/>
             </View>
         )

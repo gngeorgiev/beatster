@@ -76,19 +76,24 @@ class SearchComponent extends Component {
                     <Col size={15}>
                         <IconButton iconName="arrow-back" iconSize={25} onPress={() => Actions.pop()} />
                     </Col>
-                    <Col size={80}>
+                    <Col size={75}>
                         <MKTextField
                             ref="textField"
                             placeholder="Search tracks"
                             style={{height: 50}}
                             value={this.state.textValue}
                             onChange={ev => this.setState({textValue: ev.nativeEvent.text})}
-                            onChangeText={debounce(text => this.props.dispatch(autocomplete(text)))}
+                            onChangeText={debounce(text => this.props.dispatch(autocomplete(text)), 200)}
                             onSubmitEditing={ev => this.search(ev.nativeEvent.text)}
                             onFocus={() => this.setState({showAutocomplete: true})}
                         />
                     </Col>
-                    <Col size={5} />
+                    <Col size={10}>
+                        <IconButton iconName="close" iconSize={25} onPress={() => {
+                            this.setState({textValue: ''});
+                            this.props.dispatch(autocomplete(''))
+                        }}/>
+                    </Col>
                 </Grid>
             </View>
         );
