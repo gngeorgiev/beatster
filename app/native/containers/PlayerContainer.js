@@ -9,7 +9,7 @@ import {play, playNext, playPrevious} from '../../actions/play';
 
 class PlayerComponent extends Component {
     async play(track) {
-        await AudioPlayer.play(track.streamUrl);
+        await AudioPlayer.play(track.streamUrl, track.id);
     }
 
     async pause() {

@@ -3,6 +3,7 @@ import {View, Text, ListView, Image, TouchableNativeFeedback, TouchableOpacity, 
 import {connect} from 'react-redux';
 import {map, debounce} from 'lodash';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import BackAndroid from 'BackAndroid';
 
 import {search} from '../../actions/search';
 import {play} from '../../actions/play';
@@ -22,11 +23,27 @@ class SearchComponent extends Component {
         super();
 
         this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.backListener = this.back.bind(this);
+    }
+
+    componentDidMount() {
+        BackAndroid.addEventListener('hardwareBackPress', this.backListener);
     }
 
     componentWillUnmount() {
         this.props.dispatch(search(''));
         this.props.dispatch(autocomplete(''));
+        BackAndroid.removeEventListener('hardwareBackPress', this.backListener);
+    }
+
+    back() {
+        if (this.state.showAutocomplete && this.state.textValue) {
+            this.setState({showAutocomplete: false});
+        } else {
+            Actions.pop()
+        }
+
+        return true;
     }
 
     renderListRow(track) {
@@ -74,7 +91,7 @@ class SearchComponent extends Component {
             >
                 <Grid>
                     <Col size={15}>
-                        <IconButton iconName="arrow-back" iconSize={25} onPress={() => Actions.pop()} />
+                        <IconButton iconName="arrow-back" iconSize={25} onPress={() => this.backListener()} />
                     </Col>
                     <Col size={75}>
                         <MKTextField
@@ -153,13 +170,11 @@ class SearchComponent extends Component {
     }
 
     renderListView(providers, autoCompleteResults) {
-        if ((autoCompleteResults.length || this.state.textValue === '')&& this.state.showAutocomplete) {
-            return this.renderAutocompleteListView(autoCompleteResults);
-        } else if (providers.length) {
+        if (providers.length && !this.state.showAutocomplete) {
             return this.renderSearchResultsListView(providers);
         }
 
-        return <View />
+        return this.renderAutocompleteListView(autoCompleteResults);
     }
 
     render() {

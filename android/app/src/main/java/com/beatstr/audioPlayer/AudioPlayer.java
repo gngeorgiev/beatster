@@ -2,6 +2,7 @@ package com.beatstr.audioPlayer;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import com.facebook.react.bridge.Promise;
@@ -10,6 +11,18 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+
+class DownloadTrackTask extends AsyncTask<String, Void, Void> {
+    @Override
+    protected Void doInBackground(String... params) {
+
+        return null;
+    }
+}
 
 class AudioPlayer extends ReactContextBaseJavaModule {
     private static final String TAG = "AudioPlayer";
@@ -56,6 +69,54 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                     .emit(ev, params);
     }
 
+    private FileDescriptor saveToFile(String url, String name) {
+        try {
+            File root = android.os.Environment.getExternalStorageDirectory();
+            File dir = new File(root.getAbsolutePath() + "/beatster/downloads");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            URL downloadUrl = new URL(url);
+            File file = new File(dir, name);
+
+            URLConnection conn = downloadUrl.openConnection();
+            InputStream inputStream = conn.getInputStream();
+            final BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            final byte[] data = new byte[50];
+            final FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+            final Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        int current = 0;
+                        while ((current = bufferedInputStream.read(data, 0, data.length)) != -1 &&
+                                !Thread.currentThread().isInterrupted()) {
+                            buffer.write(data, 0, current);
+                            fileOutputStream.write(buffer.toByteArray());
+                            fileOutputStream.flush();
+                        }
+
+                        fileOutputStream.close();
+                        if (Thread.currentThread().isInterrupted()) {
+                            //TODO: delete file
+                        }
+                    } catch (Exception e) {
+                        Log.v(TAG, e.toString());
+                    }
+                }
+            });
+
+            t.start();
+
+            return fileOutputStream.getFD();
+        } catch (Exception e) {
+            Log.v(TAG, e.toString());
+            return null;
+        }
+    }
+
     @Override
     public String getName() {
         return "AudioPlayer";
@@ -82,7 +143,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void play(String url, final Promise promise) {
+    public void play(String url, String name, final Promise promise) {
         try {
             if (this.player.isPlaying() && this.dataSource.equals(url)) {
                 promise.resolve(null);
@@ -101,8 +162,14 @@ class AudioPlayer extends ReactContextBaseJavaModule {
 
             final AudioPlayer self = this;
 
+            FileDescriptor dataSource = this.saveToFile(url, name);
+
             this.player.reset();
-            this.player.setDataSource(url);
+            if (dataSource != null) {
+                this.player.setDataSource(dataSource);
+            } else {
+                this.player.setDataSource(url);
+            }
             this.player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {

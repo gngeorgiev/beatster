@@ -19,8 +19,8 @@ export class AudioPlayerWrapper {
         return AudioPlayer.stop();
     }
 
-    play(url) {
-        return AudioPlayer.play(url);
+    play(url, name) {
+        return AudioPlayer.play(url, name);
     }
 }
 
