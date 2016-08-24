@@ -19,8 +19,12 @@ export class AudioPlayerWrapper {
         return AudioPlayer.stop();
     }
 
-    play(url, name) {
-        return AudioPlayer.play(url, name);
+    play(url) {
+        return AudioPlayer.play(url);
+    }
+
+    download({streamUrl, title, id, provider}) {
+        return AudioPlayer.saveToFile(streamUrl, title, id, provider);
     }
 }
 

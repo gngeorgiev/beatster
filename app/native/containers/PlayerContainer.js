@@ -9,11 +9,15 @@ import {play, playNext, playPrevious} from '../../actions/play';
 
 class PlayerComponent extends Component {
     async play(track) {
-        await AudioPlayer.play(track.streamUrl, track.id);
+        await AudioPlayer.play(track.streamUrl);
     }
 
     async pause() {
         await AudioPlayer.pause();
+    }
+
+    async download(track) {
+        await AudioPlayer.download(track)
     }
 
     componentDidMount() {
@@ -43,17 +47,17 @@ class PlayerComponent extends Component {
             }}
         >
             <Grid>
-                <Col size={70}>
-                    <Text style={{flex: 1, textAlign: 'center', textAlignVertical: 'center', fontSize: 18}}>
+                <Col size={60}>
+                    <Text style={{flex: 1, textAlign: 'center', textAlignVertical: 'center', fontSize: 15}}>
                         {(track && track.title) || 'No track is playing'}
                     </Text>
                 </Col>
-                {/*<Col size={15}>*/}
-                    {/*<IconButton*/}
-                        {/*onPress={() => dispatch(playPrevious(track))}*/}
-                        {/*iconName="skip-previous"*/}
-                    {/*/>*/}
-                {/*</Col>*/}
+                <Col size={15}>
+                    <IconButton
+                        onPress={() => this.download(track)} //TODO: feedback
+                        iconName="file-download"
+                    />
+                </Col>
                 <Col size={15}>
                     <IconButton
                         onPress={() => dispatch(playNext(track))}
