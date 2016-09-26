@@ -75,9 +75,19 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                     .emit(ev, params);
     }
 
+    private File getDownloadsFolder() {
+        File root = android.os.Environment.getExternalStorageDirectory();
+        return new File(root.getAbsolutePath() + "/beatster/downloads");
+    }
+
     @Override
     public String getName() {
         return "AudioPlayer";
+    }
+
+    @ReactMethod
+    public void getDownloadsFolderPath(Promise promise) {
+        promise.resolve(this.getDownloadsFolder().getPath());
     }
 
     @ReactMethod
@@ -100,7 +110,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         }
     }
 
-    private void addTrackToDataJson(String name, String id, String provider, File path) throws Exception {
+    private void addTrackToDataJson(String name, String id, String provider, String thumbnail, File path) throws Exception {
         String dataPath = path.getAbsolutePath() + "/data.json";
         File dataFile = new File(dataPath);
         boolean dataExists = dataFile.exists();
@@ -117,9 +127,10 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         String jsonString = new String(chars);
         JSONArray jsonArray = new JSONArray(jsonString);
         JSONObject trackObject = new JSONObject();
-        trackObject.put("name", name);
+        trackObject.put("title", name);
         trackObject.put("id", id);
         trackObject.put("provider", provider);
+        trackObject.put("thumbnail", thumbnail);
         jsonArray.put(trackObject);
 
         PrintWriter writer = new PrintWriter(dataPath, "utf-8");
@@ -129,10 +140,9 @@ class AudioPlayer extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void saveToFile(final String streamUrl, final String name,
-                           final String id, final String provider, final Promise promise) {
+                           final String id, final String provider, final String thumbnail, final Promise promise) {
         try {
-            File root = android.os.Environment.getExternalStorageDirectory();
-            final File dir = new File(root.getAbsolutePath() + "/beatster/downloads");
+            final File dir = this.getDownloadsFolder();
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -158,7 +168,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                         }
 
                         fileOutputStream.close();
-                        self.addTrackToDataJson(name, id, provider, dir);
+                        self.addTrackToDataJson(name, id, provider, thumbnail, dir);
                         promise.resolve(null);
                     } catch (Exception e) {
                         promise.reject(e);

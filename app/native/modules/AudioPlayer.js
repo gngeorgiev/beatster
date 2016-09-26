@@ -23,8 +23,12 @@ export class AudioPlayerWrapper {
         return AudioPlayer.play(url);
     }
 
-    download({streamUrl, title, id, provider}) {
-        return AudioPlayer.saveToFile(streamUrl, title, id, provider);
+    download({streamUrl, title, id, provider, thumbnail}) {
+        return AudioPlayer.saveToFile(streamUrl, title, id, provider, thumbnail);
+    }
+
+    getDownloadsFolder() {
+        return AudioPlayer.getDownloadsFolderPath();
     }
 }
 

@@ -15,6 +15,7 @@ import {MKTextField} from 'react-native-material-kit';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../components/TabBar';
 import getProviderIcon from '../../utils/getProviderIcon';
+import {renderListSeparator} from '../components/helpers/ListViewHelper';
 
 class SearchComponent extends Component {
     state = {};
@@ -57,23 +58,6 @@ class SearchComponent extends Component {
                     <Text style={{alignItems: 'center', textAlignVertical: 'center', fontSize: 16}}>{track.title}</Text>
                 </View>
             </TouchableOpacity>
-        )
-    }
-
-    renderListSeparator(sectionId, rowId) {
-        return (
-            <View
-                key={`${sectionId}-${rowId}`}
-                style={{
-                    borderTopColor: 'black',
-                    borderTopWidth: 1,
-                    marginTop: 4,
-                    marginBottom: 4,
-                    marginRight: 10,
-                    marginLeft: 10,
-                    opacity: 0.2
-                }}
-            />
         )
     }
 
@@ -128,7 +112,7 @@ class SearchComponent extends Component {
                         key={provider.name}
                         tabLabel={provider.icon}
                         contentContainerStyle={{padding: 5}}
-                        renderSeparator={(sectionId, rowId) => this.renderListSeparator(sectionId, rowId)}
+                        renderSeparator={(sectionId, rowId) => renderListSeparator(sectionId, rowId)}
                         renderRow={item => this.renderListRow(item)}
                         enableEmptySections={true}
                         dataSource={provider.data}
