@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, ListView, TouchableOpacity, Image} from 'react-native';
+import {View, Text, ListView, TouchableOpacity, Image, DeviceEventEmitter} from 'react-native';
 import {connect} from 'react-redux';
 import {Toolbar} from 'react-native-material-design';
 import {Actions} from 'react-native-redux-router';
@@ -21,6 +21,23 @@ class HomeComponent extends Component {
         };
     }
 
+    componentDidMount() {
+        this._downloadedListener = DeviceEventEmitter.addListener('OnDownloaded', () => this.refreshDownloadedTracks());
+    }
+
+    componentWillUnmount() {
+        this._downloadedListener.remove();
+        this._downloadedListener = null;
+    }
+
+    refreshDownloadedTracks() {
+        AudioPlayer.getDownloadsFolder()
+            .then(path => readFile(path + '/data.json'))
+            .then(data => JSON.parse(data))
+            .then(tracks => this.setState({downloadsData: this.dataSource.cloneWithRows(tracks)}))
+            .catch(err => console.log(err));
+    }
+
     renderDownloadsListView() {
         const renderListRow = track => {
             return (
@@ -36,11 +53,7 @@ class HomeComponent extends Component {
             )
         };
 
-        AudioPlayer.getDownloadsFolder()
-            .then(path => readFile(path + '/data.json'))
-            .then(data => JSON.parse(data))
-            .then(tracks => this.setState({downloadsData: this.dataSource.cloneWithRows(tracks)}))
-            .catch(err => console.log(err));
+        this.refreshDownloadedTracks();
 
         return (
             <ListView

@@ -9,7 +9,15 @@ import {play, playNext, playPrevious} from '../../actions/play';
 
 class PlayerComponent extends Component {
     async play(track) {
-        await AudioPlayer.play(track.streamUrl);
+        let urlOrId;
+
+        if (track.offline) {
+            urlOrId = track.id;
+        } else {
+            urlOrId = track.streamUrl;
+        }
+
+        await AudioPlayer.play(urlOrId, track.offline);
     }
 
     async pause() {
@@ -21,11 +29,12 @@ class PlayerComponent extends Component {
     }
 
     componentDidMount() {
-        this._listener = DeviceEventEmitter.addListener('OnCompleted', () => this.props.dispatch(playNext(this.props.track)));
+        this._completedListener = DeviceEventEmitter.addListener('OnCompleted', () => this.props.dispatch(playNext(this.props.track)));
     }
 
     componentWillUnmount() {
-        this._listener.remove();
+        this._completedListener.remove();
+        this._completedListener = null;
     }
 
     componentWillReceiveProps(props) {

@@ -80,6 +80,10 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         return new File(root.getAbsolutePath() + "/beatster/downloads");
     }
 
+    private String getOfflineTrackPath(String filename) {
+        return this.getDownloadsFolder().getAbsolutePath() + "/" + filename;
+    }
+
     @Override
     public String getName() {
         return "AudioPlayer";
@@ -131,6 +135,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
         trackObject.put("id", id);
         trackObject.put("provider", provider);
         trackObject.put("thumbnail", thumbnail);
+        trackObject.put("offline", true);
         jsonArray.put(trackObject);
 
         PrintWriter writer = new PrintWriter(dataPath, "utf-8");
@@ -169,6 +174,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
 
                         fileOutputStream.close();
                         self.addTrackToDataJson(name, id, provider, thumbnail, dir);
+                        self.emitEvent("OnDownloaded", null);
                         promise.resolve(null);
                     } catch (Exception e) {
                         promise.reject(e);
@@ -185,20 +191,24 @@ class AudioPlayer extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void play(String url, final Promise promise) {
+    public void play(String urlOrname, boolean offline, final Promise promise) {
         //TODO: add a small go server that will run on the phone, we will stream through it
         //so we can both play the tracks and save them at the same time
         try {
-            if (this.player.isPlaying() && this.dataSource.equals(url)) {
+            if (offline) {
+                urlOrname = this.getOfflineTrackPath(urlOrname);
+            }
+
+            if (this.player.isPlaying() && this.dataSource.equals(urlOrname)) {
                 promise.resolve(null);
                 return;
             }
 
-            if (url == null || url.equals("")) {
-                url = this.dataSource;
+            if (urlOrname == null || urlOrname.equals("")) {
+                urlOrname = this.dataSource;
             }
 
-            if (this.dataSource != null && this.dataSource.equals(url)) {
+            if (this.dataSource != null && this.dataSource.equals(urlOrname)) {
                 this.player.start();
                 promise.resolve(null);
                 return;
@@ -207,7 +217,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
             final AudioPlayer self = this;
 
             this.player.reset();
-            this.player.setDataSource(url);
+            this.player.setDataSource(urlOrname);
             this.player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
@@ -229,7 +239,7 @@ class AudioPlayer extends ReactContextBaseJavaModule {
                 }
             });
             this.player.prepareAsync();
-            this.dataSource = url;
+            this.dataSource = urlOrname;
         } catch (Exception e) {
             this.handleError(e, promise);
         }
